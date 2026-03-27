@@ -44,6 +44,95 @@
 - `docs/architecture.md` - архітектура, доменна логіка, взаємодія компонентів.
 - `docs/generate_docs.md` - як згенерувати HTML-документацію (JSDoc).
 - `jsdoc.json` - конфігурація JSDoc.
+- `docs/deployment-architecture.md` - складові системи та діаграма для розгортання.
+- `docs/deployment-production.md` - інструкція production для DevOps.
+- `docs/deployment-update.md` - оновлення релізу та rollback.
+- `scripts/` - допоміжні скрипти dev/prod (`dev.bat` / `dev.sh`, `start-prod.*`, `run-prod.js`).
+- `Procfile` - визначення процесу для Foreman / аналогів.
+
+## Швидкий старт для розробника (з «чистої» ОС)
+
+Припускається: немає Node, немає клонованого репозиторію. **Windows** нижче з PowerShell / cmd; для **Linux/macOS** команди аналогічні (`sudo`, `apt`, `brew` тощо за політикою ОС).
+
+### 1. Необхідне ПЗ
+
+| Компонент | Призначення | Де взяти |
+|-----------|-------------|----------|
+| **Git** | Клонування репозиторію | [git-scm.com](https://git-scm.com/) |
+| **Node.js LTS** | Runtime і `npm` | [nodejs.org](https://nodejs.org/) (встановлення з галочкою «Add to PATH» на Windows) |
+
+Перевірка після встановлення (новий термінал):
+
+```bash
+git --version
+node -v
+npm -v
+```
+
+Рекомендовано: **Visual Studio Code** або інший редактор з підтримкою JavaScript.
+
+### 2. Клонування та перехід у каталог
+
+```bash
+git clone <URL-вашого-репозиторію>
+cd sto_project
+```
+
+### 3. Встановлення залежностей проєкту
+
+**Варіант A (рекомендовано на практиці):**
+
+```bash
+npm install
+```
+
+**Варіант B (скрипт «одним кліком»):**
+
+- Windows: `scripts\dev.bat`
+- Linux/macOS: `chmod +x scripts/dev.sh scripts/start-prod.sh` (один раз), потім `./scripts/dev.sh`
+
+Це виконає `npm install` у корені репозиторію.
+
+### 4. База даних SQLite
+
+Файл **`sto.db`** з’являється в корені проєкту **після першого запуску** додатка або імпорту `db.js`. Таблиці створюються автоматично в **`db.js`** (`CREATE TABLE IF NOT EXISTS`). Окремий сервер СУБД не потрібен.
+
+Опційно заповнити демо-дані:
+
+```bash
+npm run seed
+```
+
+(Обережно: `seed.js` очищає таблиці перед вставкою — лише для dev/demo.)
+
+### 5. Запуск у режимі розробки
+
+```bash
+npm start
+```
+
+Відкрий у браузері: **http://localhost:3000**
+
+У режимі розробки `NODE_ENV` не дорівнює `test`, тому сервер слухає порт **3000**.
+
+### 6. Базові команди
+
+| Команда | Опис |
+|---------|------|
+| `npm start` | Запуск HTTP-сервера (development за замовчуванням) |
+| `npm run start:prod` | Запуск з `NODE_ENV=production` (кросплатформенно через `scripts/run-prod.js`) |
+| `npm test` | Unit + інтеграційні тести (Jest) |
+| `npm run test:e2e` | Cucumber сценарії |
+| `npm run lint` | ESLint |
+| `npm run build` | Лінт + перевірка типів + тести |
+| `npm run docs` | Генерація JSDoc HTML у `docs/jsdoc/` |
+| `npm run seed` | Наповнення БД демо-даними |
+
+Автоматизація production-старх на **Windows:** `scripts\start-prod.bat`; **Unix:** `./scripts/start-prod.sh`. Детальніше про розгортання: **`docs/deployment-production.md`**.
+
+### 7. Діаграма та складові для звітів
+
+Опис архітектури з точки зору розгортання (веб-сервер, СУБД, кеш тощо): **`docs/deployment-architecture.md`**.
 
 ## Запуск проєкту
 
