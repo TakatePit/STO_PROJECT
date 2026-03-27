@@ -6,16 +6,23 @@ describe('INTEGRATED: Взаємодія API та Бази Даних СТО', (
 
     // Тест IT-1 (на основі TC1.1)
     test('IT-1: Створення клієнта має записувати дані в БД', async () => {
+        const phone = `+38099${Date.now().toString().slice(-7)}`;
+        const name = 'Олексій Тестовий';
         const response = await request(app)
             .post('/api/clients')
-            .send({ name: "Олексій Тестовий", phone: "+380991112233" });
-        
+            .send({ name, phone });
+
         expect(response.statusCode).toBe(201);
         expect(response.body).toHaveProperty('id');
-        
-        // Перевірка в базі даних (Spy/Mock концепція)
-        const client = await db.get("SELECT * FROM clients WHERE name = ?", ["Олексій Тестовий"]);
+
+        const client = await new Promise((resolve, reject) => {
+            db.get('SELECT * FROM clients WHERE phone = ?', [phone], (err, row) => {
+                if (err) reject(err);
+                else resolve(row);
+            });
+        });
         expect(client).toBeDefined();
+        expect(client.name).toBe(name);
     });
 
     // Тест IT-4 (на основі TC4.2 - Негативний)
@@ -82,11 +89,12 @@ describe('INTEGRATED: Взаємодія API та Бази Даних СТО', (
     
     // Перевіряємо, що отримана відповідь є масивом
     expect(Array.isArray(response.body)).toBeTruthy();
-    
-    // Якщо в базі є дані, перевіряємо наявність обов'язкових полів у першого клієнта
-    if (response.body.length > 0) {
-        expect(response.body[0]).toHaveProperty('name');
-        expect(response.body[0]).toHaveProperty('phone');
+
+    for (const client of response.body) {
+        expect(client).toMatchObject({
+            name: expect.anything(),
+            phone: expect.anything(),
+        });
     }
     });
 
@@ -149,10 +157,13 @@ describe('INTEGRATED: Взаємодія API та Бази Даних СТО', (
     expect(response.body).toHaveProperty('total_cost');
     });
 
-    test ('COVER-34-38: Перевірка успішного входу та даних профілю', async () => {
-        const loginRes = await request (app)
-            .post('/api/clients')
-            .send({ email: ""})
-    }
-    )
+    test('COVER-34-38: Перевірка успішного входу та даних профілю', async () => {
+        const loginRes = await request(app)
+            .post('/api/login')
+            .send({ email: 'admin@sto.com', password: 'correct' });
+        expect(loginRes.statusCode).toBe(200);
+        const profileRes = await request(app).get('/api/profile');
+        expect(profileRes.statusCode).toBe(200);
+        expect(profileRes.body).toHaveProperty('user');
+    });
 });

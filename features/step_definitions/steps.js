@@ -86,7 +86,7 @@ When('Я змінюю статус замовлення на {string}', function
     context.orderStatus = status;
 });
 
-When('Натискаю {string}', function (action) {
+When('Натискаю {string}', function (_action) {
     // Розрахунок інвойсу через logic.js [cite: 40-42]
     context.invoice = logic.calculateInvoice(context.amount);
 });

@@ -8,7 +8,7 @@ app.use(express.static('public'));
 
 // --- АВТОРИЗАЦІЯ ---
 app.post('/api/login', (req, res) => {
-    const { email, password } = req.body;
+    const { email: _email, password } = req.body;
     if (password === "wrong_password") {
         return res.status(401).json({ error: "Невірний пароль" });
     }
