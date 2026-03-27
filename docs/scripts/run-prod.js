@@ -3,4 +3,4 @@
  * Встановлює NODE_ENV до завантаження server.js.
  */
 process.env.NODE_ENV = 'production';
-require('../server.js');
+require('../../server.js');

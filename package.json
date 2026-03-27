@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-    "start:prod": "node scripts/run-prod.js",
+    "start:prod": "node docs/scripts/run-prod.js",
     "seed": "node seed.js",
     "test": "jest --coverage",
     "test:e2e": "cucumber-js",

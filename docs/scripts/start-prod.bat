@@ -1,6 +1,6 @@
 @echo off
 setlocal
-pushd "%~dp0.."
+pushd "%~dp0..\.."
 
 set NODE_ENV=production
 echo [prod] NODE_ENV=%NODE_ENV%

@@ -45,9 +45,10 @@
 - `docs/generate_docs.md` - як згенерувати HTML-документацію (JSDoc).
 - `jsdoc.json` - конфігурація JSDoc.
 - `docs/deployment-architecture.md` - складові системи та діаграма для розгортання.
-- `docs/deployment-production.md` - інструкція production для DevOps.
-- `docs/deployment-update.md` - оновлення релізу та rollback.
-- `scripts/` - допоміжні скрипти dev/prod (`dev.bat` / `dev.sh`, `start-prod.*`, `run-prod.js`).
+- `docs/deployment.md` - розгортання у production (DevOps).
+- `docs/update.md` - оновлення системи та rollback.
+- `docs/backup.md` - резервне копіювання БД та відновлення.
+- `docs/scripts/` - скрипти dev/prod (`dev.*`, `start-prod.*`, `run-prod.js`) та `README.md`.
 - `Procfile` - визначення процесу для Foreman / аналогів.
 
 ## Швидкий старт для розробника (з «чистої» ОС)
@@ -88,8 +89,8 @@ npm install
 
 **Варіант B (скрипт «одним кліком»):**
 
-- Windows: `scripts\dev.bat`
-- Linux/macOS: `chmod +x scripts/dev.sh scripts/start-prod.sh` (один раз), потім `./scripts/dev.sh`
+- Windows: `docs\scripts\dev.bat`
+- Linux/macOS: `chmod +x docs/scripts/dev.sh docs/scripts/start-prod.sh` (один раз), потім `./docs/scripts/dev.sh`
 
 Це виконає `npm install` у корені репозиторію.
 
@@ -120,7 +121,7 @@ npm start
 | Команда | Опис |
 |---------|------|
 | `npm start` | Запуск HTTP-сервера (development за замовчуванням) |
-| `npm run start:prod` | Запуск з `NODE_ENV=production` (кросплатформенно через `scripts/run-prod.js`) |
+| `npm run start:prod` | Запуск з `NODE_ENV=production` (через `docs/scripts/run-prod.js`) |
 | `npm test` | Unit + інтеграційні тести (Jest) |
 | `npm run test:e2e` | Cucumber сценарії |
 | `npm run lint` | ESLint |
@@ -128,7 +129,7 @@ npm start
 | `npm run docs` | Генерація JSDoc HTML у `docs/jsdoc/` |
 | `npm run seed` | Наповнення БД демо-даними |
 
-Автоматизація production-старх на **Windows:** `scripts\start-prod.bat`; **Unix:** `./scripts/start-prod.sh`. Детальніше про розгортання: **`docs/deployment-production.md`**.
+Автоматизація production-старту на **Windows:** `docs\scripts\start-prod.bat`; **Unix:** `./docs/scripts/start-prod.sh`. Інструкції для DevOps: **`docs/deployment.md`**, **`docs/update.md`**, **`docs/backup.md`**.
 
 ### 7. Діаграма та складові для звітів
 

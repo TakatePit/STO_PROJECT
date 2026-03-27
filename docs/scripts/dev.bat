@@ -1,6 +1,6 @@
 @echo off
 setlocal
-pushd "%~dp0.."
+pushd "%~dp0..\.."
 
 echo [dev] Catalog: %CD%
 echo [dev] Installing dependencies...
