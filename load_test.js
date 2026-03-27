@@ -24,7 +24,7 @@ export let options = {
     }
 };
 
-const BASE_URL = 'http://localhost:3000'; // Замініть на ваш URL
+const BASE_URL = 'http://localhost:3000'; 
 
 export function openDashboard() {
     let res = http.get(`${BASE_URL}/admin/dashboard`);
