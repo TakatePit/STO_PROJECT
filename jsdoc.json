@@ -1,0 +1,20 @@
+{
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": ["jsdoc", "closure"]
+  },
+  "source": {
+    "include": ["./server.js", "./db.js", "./logic.js", "./seed.js", "./tests/logic.js"],
+    "includePattern": "\\.js$"
+  },
+  "plugins": ["plugins/markdown"],
+  "opts": {
+    "destination": "./docs/jsdoc/",
+    "recurse": false,
+    "readme": "./README.md"
+  },
+  "templates": {
+    "cleverLinks": true,
+    "monospaceLinks": true
+  }
+}
