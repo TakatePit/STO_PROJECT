@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>СТО Мастер — ERP Система</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f8f9fa; }
+        .nav-tabs { cursor: pointer; margin-bottom: 20px; }
+        .card { border: none; border-radius: 10px; margin-bottom: 20px; }
+        .table { vertical-align: middle; }
+        .sidebar-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; display: block; }
+    </style>
+</head>
+<body class="container py-4">
+    <h2 class="text-center mb-4">⚙️ ERP Адміністратора СТО "Мастер"</h2>
+
+    <ul class="nav nav-tabs" id="erpTabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="clients-tab" data-bs-toggle="tab" href="#clients" onclick="loadClients()">База Клієнтів та Авто</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders" onclick="loadOrders()">Журнал замовлень</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="finance-tab" data-bs-toggle="tab" href="#finance">Фінанси та Чеки</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="clients">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card p-3 shadow-sm">
+                        <span class="sidebar-title">👤 Реєстрація клієнта</span>
+                        <input type="text" id="clientName" class="form-control mb-2" placeholder="ПІБ клієнта">
+                        <input type="text" id="clientPhone" class="form-control mb-2" placeholder="Телефон">
+                        <button class="btn btn-primary w-100" onclick="addClient()">Зареєструвати клієнта</button>
+                    </div>
+
+                    <div class="card p-3 shadow-sm border-primary">
+                        <span class="sidebar-title">🚗 Додати авто клієнту</span>
+                        <small class="text-muted mb-2 d-block">Введіть ID клієнта з таблиці праворуч</small>
+                        <input type="number" id="vClientId" class="form-control mb-2" placeholder="ID Клієнта (власника)">
+                        <input type="text" id="vBrand" class="form-control mb-2" placeholder="Марка та модель">
+                        <input type="text" id="vPlate" class="form-control mb-2" placeholder="Держномер">
+                        <button class="btn btn-dark w-100" onclick="addVehicle()">Прив'язати автомобіль</button>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <table class="table bg-white shadow-sm rounded">
+                        <thead class="table-light"><tr><th>ID</th><th>Клієнт</th><th>Телефон</th><th>Дії</th></tr></thead>
+                        <tbody id="clientTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="orders">
+            <div class="card p-3 shadow-sm mb-4">
+                <h5>📝 Нове замовлення на сервіс</h5>
+                <div class="row">
+                    <div class="col-md-3">
+                        <input type="number" id="vId" class="form-control" placeholder="ID Автомобіля">
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" id="oDesc" class="form-control" placeholder="Опис проблеми або робіт">
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-success w-100" onclick="addOrder()">Відкрити замовлення</button>
+                    </div>
+                </div>
+            </div>
+            <table class="table bg-white shadow-sm">
+                <thead class="table-dark"><tr><th>№</th><th>Клієнт та Авто</th><th>Статус</th><th>Вартість</th><th>Дії</th></tr></thead>
+                <tbody id="orderTableBody"></tbody>
+            </table>
+        </div>
+
+        <div class="tab-pane fade" id="finance">
+            <div id="invoiceView" class="card p-4 shadow-sm mx-auto" style="max-width: 500px; display: none;">
+                <h4 class="text-center">🧾 Квитанція СТО</h4>
+                <hr>
+                <div id="invoiceDetail"></div>
+                <button class="btn btn-secondary w-100 mt-3" onclick="document.getElementById('invoiceView').style.display='none'">Закрити</button>
+            </div>
+            <div id="financePlaceholder" class="text-center py-5">
+                <p class="text-muted">Перейдіть до Журналу замовлень та натисніть "Сформувати чек"</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // --- КЛІЄНТИ ---
+        async function loadClients() {
+            const res = await fetch('/api/clients');
+            const data = await res.json();
+            document.getElementById('clientTableBody').innerHTML = data.map(c => `
+                <tr>
+                    <td><span class="badge bg-secondary">${c.id}</span></td>
+                    <td><strong>${c.name}</strong></td>
+                    <td>${c.phone}</td>
+                    <td><button class="btn btn-outline-danger btn-sm" onclick="deleteClient(${c.id})">Видалити</button></td>
+                </tr>
+            `).join('');
+        }
+
+        async function addClient() {
+            const name = document.getElementById('clientName').value;
+            const phone = document.getElementById('clientPhone').value;
+            if(!name || !phone) return alert("Вкажіть ім'я та телефон");
+            await fetch('/api/clients', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ name, phone })
+            });
+            document.getElementById('clientName').value = '';
+            document.getElementById('clientPhone').value = '';
+            loadClients();
+        }
+
+        // --- АВТОМОБІЛІ ---
+        async function addVehicle() {
+            const client_id = document.getElementById('vClientId').value;
+            const brand = document.getElementById('vBrand').value;
+            const plate = document.getElementById('vPlate').value;
+
+            if(!client_id || !brand || !plate) return alert("Заповніть всі поля для авто");
+
+            const res = await fetch('/api/vehicles', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ 
+                    client_id, brand, plate, 
+                    vin: 'VIN-' + Math.floor(Math.random()*10000), 
+                    model: 'Standard', year: 2024 
+                })
+            });
+
+            if(res.ok) {
+                alert("Автомобіль успішно прив'язано до клієнта!");
+                document.getElementById('vClientId').value = '';
+                document.getElementById('vBrand').value = '';
+                document.getElementById('vPlate').value = '';
+            } else {
+                alert("Помилка: Перевірте чи існує клієнт з таким ID");
+            }
+        }
+
+        // --- ЗАМОВЛЕННЯ ---
+        async function loadOrders() {
+            const res = await fetch('/api/orders');
+            const orders = await res.json();
+            const body = document.getElementById('orderTableBody');
+            
+            body.innerHTML = orders.map(o => `
+                <tr class="${o.status === 'Завершено' ? 'table-success' : ''}">
+                    <td>#${o.id}</td>
+                    <td><strong>${o.client_name}</strong><br><small class="text-muted">${o.brand} (${o.plate})</small></td>
+                    <td><span class="badge ${o.status === 'Завершено' ? 'bg-success' : 'bg-warning text-dark'}">${o.status}</span></td>
+                    <td>${o.total_cost} грн</td>
+                    <td><button class="btn btn-primary btn-sm" onclick="showInvoice(${o.id})">Сформувати чек</button></td>
+                </tr>
+            `).join('');
+        }
+
+        async function addOrder() {
+            const vehicle_id = document.getElementById('vId').value;
+            const description = document.getElementById('oDesc').value;
+            if(!vehicle_id || !description) return alert("Вкажіть ID автомобіля та опис робіт");
+            
+            await fetch('/api/orders', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ vehicle_id, description, items: [] })
+            });
+            document.getElementById('vId').value = '';
+            document.getElementById('oDesc').value = '';
+            loadOrders();
+        }
+
+        // --- ФІНАНСИ ---
+        async function showInvoice(id) {
+            const res = await fetch(`/api/orders/${id}/invoice`);
+            const data = await res.json();
+            
+            document.getElementById('financePlaceholder').style.display = 'none';
+            const view = document.getElementById('invoiceView');
+            view.style.display = 'block';
+            
+            document.getElementById('invoiceDetail').innerHTML = `
+                <p><strong>Номер замовлення:</strong> #${id}</p>
+                <p><strong>Вартість послуг та запчастин:</strong> ${data.subtotal} грн</p>
+                <p><strong>ПДВ (5%):</strong> ${data.tax} грн</p>
+                <hr>
+                <h5 class="text-success">Разом до сплати: ${data.total} грн</h5>
+            `;
+            
+            const financeTab = new bootstrap.Tab(document.getElementById('finance-tab'));
+            financeTab.show();
+        }
+
+        async function deleteClient(id) {
+            if(confirm("Видалити клієнта з бази?")) {
+                await fetch(`/api/clients/${id}`, { method: 'DELETE' });
+                loadClients();
+            }
+        }
+
+        window.onload = loadClients;
+    </script>
+</body>
+</html>
