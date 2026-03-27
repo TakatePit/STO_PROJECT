@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "types": ["node", "jest"]
+  },
+  "include": [
+    "server.js",
+    "db.js",
+    "logic.js",
+    "seed.js",
+    "tests/**/*.js",
+    "features/**/*.js"
+  ],
+  "exclude": ["node_modules", "load_test.js", "coverage"]
+}
