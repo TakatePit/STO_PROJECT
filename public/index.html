@@ -208,6 +208,32 @@
             }
         }
 
+        window.addEventListener('error', (ev) => {
+            fetch('/api/client-log', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: ev.message,
+                    source: ev.filename,
+                    url: location.href,
+                    line: ev.lineno,
+                    col: ev.colno,
+                    stack: ev.error && ev.error.stack,
+                }),
+            }).catch(() => {});
+        });
+        window.addEventListener('unhandledrejection', (ev) => {
+            fetch('/api/client-log', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: String(ev.reason),
+                    url: location.href,
+                    stack: ev.reason && ev.reason.stack,
+                }),
+            }).catch(() => {});
+        });
+
         window.onload = loadClients;
     </script>
 </body>

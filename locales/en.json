@@ -1,0 +1,13 @@
+{
+  "ROUTE_NOT_FOUND": "Route not found",
+  "INTERNAL": "An internal error occurred. Please contact support with the error code.",
+  "CLIENT_INVALID": "Invalid client data",
+  "VEHICLE_INVALID": "Error: check client ID or VIN",
+  "WRONG_PASSWORD": "Invalid password",
+  "CLIENT_NOT_FOUND": "Client not found",
+  "ORDER_NOT_FOUND": "Order not found",
+  "DB_ERROR": "Data storage error",
+  "LOGIN_SUCCESS": "Login successful",
+  "DELETE_SUCCESS": "Deleted successfully",
+  "STATUS_UPDATED": "Status updated"
+}

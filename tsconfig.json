@@ -9,6 +9,7 @@
     "strict": false,
     "noImplicitAny": false,
     "skipLibCheck": true,
+    "resolveJsonModule": true,
     "types": ["node", "jest"]
   },
   "include": [
