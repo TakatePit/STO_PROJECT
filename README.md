@@ -50,6 +50,11 @@
 - `docs/backup.md` - резервне копіювання БД та відновлення.
 - `docs/scripts/` - скрипти dev/prod (`dev.*`, `start-prod.*`, `run-prod.js`) та `README.md`.
 - `Procfile` - визначення процесу для Foreman / аналогів.
+- `logger.js` - Winston: консоль + ротація файлів у `logs/`.
+- `middleware/` - `requestContext` (X-Request-Id), `httpLogger`.
+- `errors/` - `AppError`, обробники HTTP, `i18n`.
+- `locales/` - повідомлення помилок (uk/en).
+- `docs/logging.md` - логування та обробка помилок (лаб. 7).
 
 ## Швидкий старт для розробника (з «чистої» ОС)
 
@@ -143,6 +148,8 @@ npm start
 ```
 
 Сервер запускається на `http://localhost:3000`.
+
+**Логування:** змінна `LOG_LEVEL` (`debug`, `info`, `warn`, `error`, `silent`) — без перекомпіляції; каталог логів `LOG_DIR` (за замовчуванням `./logs`). Деталі: **`docs/logging.md`**.
 
 ## Тестування
 
