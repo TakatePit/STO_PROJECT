@@ -14,9 +14,21 @@ export default [
             'public/**',
             'docs/jsdoc/**',
             'load_test.js',
+            'frontend/dist/**',
+            '**/dist/**',
+            'playwright-report/**',
+            'test-results/**',
         ],
     },
     js.configs.recommended,
+    {
+        files: ['**/*.cjs'],
+        languageOptions: {
+            ecmaVersion: 2022,
+            sourceType: 'commonjs',
+            globals: { ...globals.node },
+        },
+    },
     {
         files: ['**/*.js'],
         languageOptions: {

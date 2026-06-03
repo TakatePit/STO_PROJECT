@@ -5,7 +5,7 @@
 
 class AppError extends Error {
     /**
-     * @param {string} code Унікальний код типу (наприклад STO_DB).
+     * @param {string} code Унікальний код типу (наприклад CF_DB).
      * @param {number} statusCode HTTP.
      * @param {string} messageKey Ключ у locales/*.json.
      * @param {object} [opts]

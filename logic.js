@@ -1,5 +1,5 @@
 /**
- * Доменні функції СТО: гроші, VIN, держномери, відображення статусів.
+ * Доменні функції CarFlow: гроші, VIN, держномери, відображення статусів.
  * Модуль без побічних ефектів — зручний для unit-тестів і Cucumber.
  * @module logic
  */
@@ -39,6 +39,17 @@ const logic = {
      * @returns {number} Сума з урахуванням знижки або без змін.
      */
     applyDiscount: (sum) => (sum > 5000 ? sum * 0.9 : sum),
+
+    /**
+     * Рахує суму замовлення по позиціях: qty * unit_price.
+     * @param {Array<{qty:number, unit_price:number}>} items Позиції замовлення.
+     * @returns {number} Підсумкова сума.
+     */
+    calculateOrderTotal: (items) =>
+        (Array.isArray(items) ? items : []).reduce(
+            (acc, item) => acc + Number(item.qty || 0) * Number(item.unit_price || 0),
+            0,
+        ),
 
     /**
      * Нормалізує держномер: прибирає пробіли та дефіси, upper case.

@@ -5,3 +5,6 @@ coverage/
 dist
 docs/jsdoc/
 logs/
+data/sto-snapshot.json
+playwright-report/
+test-results/

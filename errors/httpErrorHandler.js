@@ -50,7 +50,7 @@ function sendApiError(res, req, err) {
     return res.status(500).json({
         error: userMsg,
         errorId,
-        code: 'STO_INTERNAL',
+        code: 'CF_INTERNAL',
         requestId: req.requestId,
     });
 }
@@ -61,7 +61,7 @@ function sendApiError(res, req, err) {
  */
 function notFoundHandler(req, res) {
     if (req.path.startsWith('/api')) {
-        const err = new AppError('STO_ROUTE_NOT_FOUND', 404, 'ROUTE_NOT_FOUND', {
+        const err = new AppError('CF_ROUTE_NOT_FOUND', 404, 'ROUTE_NOT_FOUND', {
             fallbackMessage: 'Маршрут не знайдено',
             context: { path: req.path, method: req.method },
         });

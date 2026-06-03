@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Реєстрація</title>
+</head>
+<body>
+    <h2>Реєстрація клієнта</h2>
+    <form id="registerForm">
+        <input id="full_name" placeholder="ПІБ" required />
+        <input id="phone" placeholder="Телефон" required />
+        <input id="email" type="email" placeholder="Email" required />
+        <input id="password" type="password" placeholder="Пароль" required />
+        <button type="submit">Зареєструватися</button>
+    </form>
+    <p id="status"></p>
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                full_name: document.getElementById('full_name').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+            };
+            const res = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                document.getElementById('status').textContent = data.error || 'Помилка реєстрації';
+                return;
+            }
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('role', data.user.role);
+            location.href = '/cabinet.html';
+        });
+    </script>
+</body>
+</html>

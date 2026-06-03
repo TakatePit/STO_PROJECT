@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Кабінет клієнта</title>
+</head>
+<body>
+    <h2>Кабінет клієнта</h2>
+    <button onclick="logout()">Вийти</button>
+    <h3>Профіль</h3>
+    <pre id="profile"></pre>
+    <h3>Минулі візити</h3>
+    <ul id="orders"></ul>
+    <h3>Прайс</h3>
+    <ul id="services"></ul>
+
+    <script>
+        const token = localStorage.getItem('token');
+        if (!token) location.href = '/login.html';
+
+        function logout() {
+            localStorage.clear();
+            location.href = '/login.html';
+        }
+
+        async function authed(url) {
+            return fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+        }
+
+        async function init() {
+            const profileRes = await authed('/api/client/profile');
+            if (profileRes.status === 401 || profileRes.status === 403) return logout();
+            const profile = await profileRes.json();
+            document.getElementById('profile').textContent = JSON.stringify(profile.profile, null, 2);
+
+            const orderRes = await authed('/api/client/orders');
+            const orders = await orderRes.json();
+            document.getElementById('orders').innerHTML = orders
+                .map((o) => `<li>#${o.id} | ${o.brand} ${o.model} | ${o.status} | ${o.total_cost} грн</li>`)
+                .join('');
+
+            const serviceRes = await fetch('/api/services');
+            const services = await serviceRes.json();
+            document.getElementById('services').innerHTML = services
+                .map((s) => `<li>${s.title}: ${s.price} грн</li>`)
+                .join('');
+        }
+
+        init();
+    </script>
+</body>
+</html>
